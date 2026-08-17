@@ -1,0 +1,18 @@
+# ===== 构建产物 / 工具链（不提交） =====
+ticlang/
+gcc/
+Debug/
+*.out
+*.map
+*.obj
+*.o
+*.d
+*.hex
+*.bin
+*.lst
+*.log
+
+# ===== 临时 / 备份文件 =====
+*.bak
+*~
+*.swp
