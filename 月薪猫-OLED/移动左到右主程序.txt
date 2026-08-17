@@ -1,0 +1,60 @@
+#include "stm32f10x.h"
+#include "OLED.h"
+#include "Delay.h"
+
+
+//程序基于江协科技OLED模版程序上编写
+
+//OLED管脚连接:  显示屏GND-单片机GND   显示屏VCC-单片机3.3  显示屏SCL-单片机B13  显示屏SDA-单片机PB12
+//ID:我的STM32又烧啦   抖音/B站同名
+
+//程序有两个版本，一个是在中间原地跳舞的，还有一个是我改进过移动跳舞的版本。
+//默认这个是移动版本，需要不动版本的在程序文件夹里面的复制之后替换主程序即可。
+
+
+// 声明外部全局变量：OLED显示缓存数组
+// 8页 × 128列，用于存储整屏要显示的点阵数据
+extern uint8_t OLED_DisplayBuf[8][128];
+
+int main(void)
+{
+	uint8_t frame;                // 定义动画帧变量，用于切换22帧动画
+	int16_t x_offset = -128;	     // 定义X轴偏移量，初始值-128，实现从左向右滚动效果
+	OLED_Init();		             
+	while(1)		                 
+	{
+		// 循环播放22帧动画（frame从0 ~ 21循环）
+		for(frame=0; frame<22; frame++)
+		{
+			OLED_Clear();		     // 清空OLED显示缓存
+			
+			// 遍历OLED 8个页（屏幕纵向分为8页，每页8行像素）
+			for (uint8_t page = 0; page < 8; page++)
+			{
+				// 遍历OLED 128列（屏幕横向128列）
+				for (uint8_t col = 0; col < 128; col++)
+				{
+					// 计算当前列对应的图像原始列坐标
+					// 实现图像整体左右滚动
+					int16_t img_col = col - x_offset;
+					
+					if (img_col >= 0 && img_col < 128)
+					{
+						// 从动画数组中取出对应数据，写入OLED显示缓存
+						OLED_DisplayBuf[page][col] = YueXinMao[frame][page][img_col];
+					}
+				}
+			}
+			OLED_Update();		   
+			Delay_ms(20);		//改变这个延时，就可以改变速度     
+			
+			x_offset++;		       // X轴偏移量+1，让图像向右移动1列
+			// 边界判断：当偏移量超过128时，重置为-128
+			// 实现循环滚动，无限播放
+			if (x_offset > 128)
+			{
+				x_offset = -128;
+			}
+		}
+	}
+}

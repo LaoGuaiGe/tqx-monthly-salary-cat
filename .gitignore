@@ -12,6 +12,10 @@ Debug/
 *.lst
 *.log
 
+# ===== Keil 构建产物目录（月薪猫-OLED 参考案例） =====
+Objects/
+Listings/
+
 # ===== 临时 / 备份文件 =====
 *.bak
 *~
